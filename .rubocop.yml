@@ -1,0 +1,84 @@
+require: rubocop-rails
+
+AllCops:
+  NewCops: enable
+  Exclude:
+    - test/test_helper.rb
+    - test/channels/application_cable/connection_test.rb
+    - spec/dummy/db/schema.rb
+    - db/schema.rb
+    - db/seeds.rb
+    - 'db/seeds/**/*'
+    - 'node_modules/**/*'
+    - 'node_modules/**/**/*'
+    - config/initializers/devise.rb
+    - Guardfile
+    - bin/bundle
+    - vendor/**/*
+    - public/**/*
+    - app/assets/javascript/**/*
+    - app/assets/stylesheets/**/*
+    - config/environments/development.rb
+    - spec/factories/**
+
+Metrics/BlockLength:
+  IgnoredMethods: ['describe', 'context', 'namespace', 'Rails.application.configure', 'scenario', 'feature']
+  Exclude:
+    - config/routes.rb
+    - config/environments/development.rb
+    - config/environments/production.rb
+
+Metrics/AbcSize:
+  Enabled: false
+
+Style/HashSyntax:
+  EnforcedStyle: ruby19
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+
+Rails/BulkChangeTable:
+  Exclude:
+    - 'db/migrate/*'
+
+Metrics/ClassLength:
+  Max: 120
+
+Metrics/MethodLength:
+  Max: 120
+
+Naming/MethodName:
+  EnforcedStyle: snake_case
+
+Style/MethodCallWithoutArgsParentheses:
+  Enabled: true
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Layout/IndentationWidth:
+  Width: 2
+
+Layout/LineLength:
+  Max: 120
+  Exclude:
+    - Gemfile
+    - Rakefile
+
+Style/SymbolProc:
+  Enabled: true
+
+Style/TrailingCommaInArguments:
+  Enabled: false
+
+Style/ZeroLengthPredicate:
+  Enabled: true
+
+Style/Documentation:
+  Enabled: false
