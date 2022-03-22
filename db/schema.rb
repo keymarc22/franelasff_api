@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_18_182301) do
+ActiveRecord::Schema.define(version: 2022_03_22_000018) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,9 +29,8 @@ ActiveRecord::Schema.define(version: 2022_03_18_182301) do
     t.string "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "owner_type"
-    t.bigint "owner_id"
-    t.index ["owner_type", "owner_id"], name: "index_catalogues_on_owner"
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_catalogues_on_user_id"
   end
 
   create_table "shirts", force: :cascade do |t|
@@ -44,11 +43,10 @@ ActiveRecord::Schema.define(version: 2022_03_18_182301) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "store_id"
     t.string "size"
-    t.string "owner_type"
-    t.bigint "owner_id"
+    t.bigint "user_id"
     t.index ["code"], name: "index_shirts_on_code", unique: true
-    t.index ["owner_type", "owner_id"], name: "index_shirts_on_owner"
     t.index ["store_id"], name: "index_shirts_on_store_id"
+    t.index ["user_id"], name: "index_shirts_on_user_id"
   end
 
   create_table "stores", force: :cascade do |t|
@@ -56,22 +54,16 @@ ActiveRecord::Schema.define(version: 2022_03_18_182301) do
     t.string "location"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "owner_type"
-    t.bigint "owner_id"
-    t.index ["owner_type", "owner_id"], name: "index_stores_on_owner"
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_stores_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
+    t.string "name"
+    t.string "email"
+    t.string "auth_token"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "name"
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "catalogue_shirts", "catalogues"

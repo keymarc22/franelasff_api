@@ -3,9 +3,10 @@
 require "rails_helper"
 
 RSpec.describe Shirt, type: :model do
-  describe "associations" do
+  describe "validate relations" do
     it { is_expected.to have_many(:catalogues).through(:catalogue_shirts) }
     it { is_expected.to belong_to(:store) }
+    it { is_expected.to belong_to(:owner).class_name("User") }
   end
 
   describe "validations" do

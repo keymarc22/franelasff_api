@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :shirt do
+  factory :store do
     name { Faker::Commerce.department }
     location { Faker::Address.street_address }
 

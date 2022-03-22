@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe Store, type: :model do
-  describe "associations" do
+  describe "validate relations" do
     it { is_expected.to have_many(:shirts) }
   end
 

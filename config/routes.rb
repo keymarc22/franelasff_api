@@ -7,4 +7,5 @@ Rails.application.routes.draw do
   # end
 
   get "/health", to: "health#health"
+  resources :stores
 end
