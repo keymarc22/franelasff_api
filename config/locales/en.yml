@@ -2,9 +2,17 @@
 en:
   activerecord:
     attributes:
+      shirt:
+        color: el color
+        owner: el usuario
+        print: el estampado
+        quantity: la cantidad
+        size: la talla
+        store: el almacén
       store:
         location: la ubicación
         name: el nombre
+        owner: el usuario
     errors:
       message:
         record_invalid: Información inválida

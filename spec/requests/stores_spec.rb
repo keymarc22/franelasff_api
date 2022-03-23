@@ -3,9 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Stores", type: :request do
-
   describe "GET /stores" do
-    context 'with data' do
+    context "with data" do
       let!(:stores) { create_list(:store, 20) }
       before { get stores_path }
 
@@ -22,7 +21,7 @@ RSpec.describe "Stores", type: :request do
       end
     end
 
-    context 'without data' do
+    context "without data" do
       before { get stores_path }
 
       it "should return status code 200" do
@@ -40,7 +39,7 @@ RSpec.describe "Stores", type: :request do
   end
 
   describe "GET /stores/{id}" do
-    context 'with valid id' do
+    context "with valid id" do
       let!(:store) { create(:store) }
       before { get store_path(id: store.id) }
 
@@ -57,8 +56,8 @@ RSpec.describe "Stores", type: :request do
       end
     end
 
-    context 'with invalid id' do
-      before { get store_path(id: '100A') }
+    context "with invalid id" do
+      before { get store_path(id: "100A") }
 
       it "should return status code 422" do
         payload = JSON.parse(response.body)
@@ -76,8 +75,8 @@ RSpec.describe "Stores", type: :request do
   end
 
   describe "POST /stores" do
-    context 'with valid data' do
-      let!(:store) { attributes_for(:store) }
+    context "with valid data" do
+      let!(:store) { attributes_for(:store, owner_id: create(:user).id ) }
       before { post stores_path, params: { store: store } }
 
       it "should return status code 201" do
@@ -93,8 +92,8 @@ RSpec.describe "Stores", type: :request do
       end
     end
 
-    context 'with valid data' do
-      let!(:store) { { name: 'Testing' } }
+    context "with valid data" do
+      let!(:store) { { name: "Testing" } }
       before { post stores_path, params: { store: store } }
 
       it "should return status code 422" do
@@ -107,7 +106,7 @@ RSpec.describe "Stores", type: :request do
 
       it "should return error message" do
         payload = JSON.parse(response.body)
-        expect(payload["error"]).to eq("La validación falló: la ubicación no puede estar en blanco")
+        expect(payload["error"]).to include("el usuario debe existir, la ubicación no puede estar en blanco")
       end
     end
   end
@@ -132,7 +131,7 @@ RSpec.describe "Stores", type: :request do
 
     context "with invalid data" do
       let!(:store) { create(:store) }
-      before { put store_path(id: store.id), params: { store: { name: ''} } }
+      before { put store_path(id: store.id), params: { store: { name: "" } } }
 
       it "should return status code 422" do
         payload = JSON.parse(response.body)
@@ -148,8 +147,6 @@ RSpec.describe "Stores", type: :request do
         expect(payload["error"]).to eq("La validación falló: el nombre no puede estar en blanco")
       end
     end
-
-
   end
 
   describe "DELETE /stores/{id}" do
@@ -169,8 +166,8 @@ RSpec.describe "Stores", type: :request do
       end
     end
 
-    context 'with invalid id' do
-      before { delete store_path(id: '100A') }
+    context "with invalid id" do
+      before { delete store_path(id: "100A") }
 
       it "should return status code 422" do
         payload = JSON.parse(response.body)

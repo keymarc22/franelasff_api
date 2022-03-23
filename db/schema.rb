@@ -29,8 +29,8 @@ ActiveRecord::Schema.define(version: 2022_03_22_000018) do
     t.string "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_id"
-    t.index ["user_id"], name: "index_catalogues_on_user_id"
+    t.bigint "owner_id"
+    t.index ["owner_id"], name: "index_catalogues_on_owner_id"
   end
 
   create_table "shirts", force: :cascade do |t|
@@ -43,10 +43,10 @@ ActiveRecord::Schema.define(version: 2022_03_22_000018) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "store_id"
     t.string "size"
-    t.bigint "user_id"
+    t.bigint "owner_id"
     t.index ["code"], name: "index_shirts_on_code", unique: true
+    t.index ["owner_id"], name: "index_shirts_on_owner_id"
     t.index ["store_id"], name: "index_shirts_on_store_id"
-    t.index ["user_id"], name: "index_shirts_on_user_id"
   end
 
   create_table "stores", force: :cascade do |t|
@@ -54,8 +54,8 @@ ActiveRecord::Schema.define(version: 2022_03_22_000018) do
     t.string "location"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_id"
-    t.index ["user_id"], name: "index_stores_on_user_id"
+    t.bigint "owner_id"
+    t.index ["owner_id"], name: "index_stores_on_owner_id"
   end
 
   create_table "users", force: :cascade do |t|

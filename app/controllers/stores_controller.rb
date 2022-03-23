@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class StoresController < ApplicationController
-  before_action :find_store, except: [:index, :create]
+  before_action :find_store, except: %i[index create]
 
   # GET /stores
   def index
@@ -32,7 +34,7 @@ class StoresController < ApplicationController
   private
 
   def store_params
-    params.require(:store).permit(:name, :location)
+    params.require(:store).permit(:name, :location, :owner_id)
   end
 
   def find_store

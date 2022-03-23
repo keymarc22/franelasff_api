@@ -10,9 +10,7 @@ RSpec.describe Shirt, type: :model do
   end
 
   describe "validations" do
-    it { is_expected.to validate_uniqueness_of(:code).case_insensitive }
     it { is_expected.to validate_presence_of :color }
-    it { is_expected.to validate_presence_of :code }
     it { is_expected.to validate_presence_of :size }
     it { is_expected.to validate_presence_of :print }
     it { is_expected.to validate_presence_of :quantity }
