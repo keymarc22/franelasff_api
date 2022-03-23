@@ -15,4 +15,13 @@ RSpec.describe Shirt, type: :model do
     it { is_expected.to validate_presence_of :print }
     it { is_expected.to validate_presence_of :quantity }
   end
+
+  describe "call_backs" do
+    describe "#set_code" do
+      it "should assign code after_create" do
+        shirt = create(:shirt)
+        expect(shirt.code).to_not eq(nil)
+      end
+    end
+  end
 end
