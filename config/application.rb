@@ -26,8 +26,9 @@ module FranelasffReact
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.1
     config.i18n.default_locale = :es
-    config.time_zone = "UTC"
-    config.active_record.default_timezone = :utc
+    config.i18n.available_locales = [:en, :es]
+    config.time_zone = "Caracas"
+    config.active_record.default_timezone = :caracas
 
     # Configuration for the application, engines, and railties goes here.
     #

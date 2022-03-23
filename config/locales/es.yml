@@ -1,5 +1,5 @@
 ---
-en:
+es:
   activerecord:
     attributes:
       store:
@@ -8,4 +8,4 @@ en:
     errors:
       message:
         record_invalid: Información inválida
-  hello: Hello world
+  hello: Hola Mundo
