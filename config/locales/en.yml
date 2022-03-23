@@ -2,6 +2,11 @@
 en:
   activerecord:
     attributes:
+      catalogue:
+        description: la descripción
+        owner: el usuario
+        shirts: las camisas
+        title: el título
       shirt:
         color: el color
         owner: el usuario

@@ -9,4 +9,5 @@ Rails.application.routes.draw do
   get "/health", to: "health#health"
   resources :stores
   resources :shirts
+  resources :catalogues
 end
