@@ -16,7 +16,7 @@ RSpec.describe "Catalogues", type: :request do
 
       it "should return catalogues" do
         payload = JSON.parse(response.body)
-        expect(payload["catalogues"].count).to eq(20)
+        expect(payload.count).to eq(20)
       end
     end
 
@@ -26,13 +26,13 @@ RSpec.describe "Catalogues", type: :request do
       it "should return status code 200" do
         payload = JSON.parse(response.body)
 
-        expect(payload).not_to be_empty
+        expect(payload).to be_empty
         expect(response).to have_http_status(200)
       end
 
       it "should return catalogues empty" do
         payload = JSON.parse(response.body)
-        expect(payload["catalogues"].count).to eq(0)
+        expect(payload.count).to eq(0)
       end
     end
   end
@@ -51,7 +51,10 @@ RSpec.describe "Catalogues", type: :request do
 
       it "should return catalogue" do
         payload = JSON.parse(response.body)
-        expect(payload["catalogue"]["id"]).to eq(catalogue.id)
+        expect(payload["id"]).to eq(catalogue.id)
+        expect(payload["title"]).to eq(catalogue.title)
+        expect(payload["description"]).to eq(catalogue.description)
+        expect(payload["shirts"]).to eq(catalogue.shirts)
       end
     end
 

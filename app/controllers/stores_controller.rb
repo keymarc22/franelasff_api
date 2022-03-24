@@ -6,24 +6,24 @@ class StoresController < ApplicationController
   # GET /stores
   def index
     @stores = Store.all
-    render json: { stores: @stores }, status: :ok
+    render json: @stores, status: :ok
   end
 
   # POST /stores
   def create
     @store = Store.create!(store_params)
-    render json: { store: @store }, status: :created
+    render json: @store, status: :created
   end
 
   # GET /stores/:id
   def show
-    render json: { store: @store }, status: :ok
+    render json: @store, status: :ok
   end
 
   # PUT /stores/:id
   def update
     @store.update!(store_params)
-    render json: { store: @store }, status: :ok
+    render json: @store, status: :ok
   end
 
   def destroy

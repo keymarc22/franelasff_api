@@ -17,7 +17,7 @@ RSpec.describe "Shirts", type: :request do
 
       it "should return shirts" do
         payload = JSON.parse(response.body)
-        expect(payload["shirts"].count).to eq(20)
+        expect(payload.count).to eq(20)
       end
     end
 
@@ -27,13 +27,13 @@ RSpec.describe "Shirts", type: :request do
       it "should return status code 200" do
         payload = JSON.parse(response.body)
 
-        expect(payload).not_to be_empty
+        expect(payload).to be_empty
         expect(response).to have_http_status(200)
       end
 
       it "should return shirts empty" do
         payload = JSON.parse(response.body)
-        expect(payload["shirts"].count).to eq(0)
+        expect(payload.count).to eq(0)
       end
     end
   end
@@ -52,7 +52,13 @@ RSpec.describe "Shirts", type: :request do
 
       it "should return shirt" do
         payload = JSON.parse(response.body)
-        expect(payload["shirt"]["id"]).to eq(shirt.id)
+        expect(payload["id"]).to eq(shirt.id)
+        expect(payload["color"]).to eq(shirt.color)
+        expect(payload["size"]).to eq(shirt.size)
+        expect(payload["print"]).to eq(shirt.print)
+        expect(payload["quantity"]).to eq(shirt.quantity)
+        expect(payload["owner"]['id']).to eq(shirt.owner.id)
+        expect(payload["store"]['id']).to eq(shirt.store.id)
       end
     end
 

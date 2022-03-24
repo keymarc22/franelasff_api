@@ -6,24 +6,24 @@ class ShirtsController < ApplicationController
   # GET /shirts
   def index
     @shirts = Shirt.all
-    render json: { shirts: @shirts }, status: :ok
+    render json: @shirts, status: :ok
   end
 
   # POST /shirts
   def create
     @shirt = Shirt.create!(shirt_params)
-    render json: { shirt: @shirt }, status: :created
+    render json: @shirt, status: :created
   end
 
   # GET /shirts/:id
   def show
-    render json: { shirt: @shirt }, status: :ok
+    render json: @shirt, status: :ok
   end
 
   # PUT /shirts/:id
   def update
     @shirt.update!(shirt_params)
-    render json: { shirt: @shirt }, status: :ok
+    render json: @shirt, status: :ok
   end
 
   def destroy

@@ -6,7 +6,7 @@ FactoryBot.define do
 
     trait :with_shirts do
       after(:create) do |store|
-        create :shirt, store_id: store.id
+        5.times { create :shirt, store_id: store.id }
       end
     end
   end

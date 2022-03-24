@@ -6,24 +6,24 @@ class CataloguesController < ApplicationController
   # GET /catalogues
   def index
     @catalogues = Catalogue.all
-    render json: { catalogues: @catalogues }, status: :ok
+    render json: @catalogues, status: :ok
   end
 
   # POST /catalogues
   def create
     @catalogue = Catalogue.create!(catalogue_params)
-    render json: { catalogue: @catalogue }, status: :created
+    render json: @catalogue, status: :created
   end
 
   # GET /catalogues/:id
   def show
-    render json: { catalogue: @catalogue }, status: :ok
+    render json: @catalogue, status: :ok
   end
 
   # PUT /catalogues/:id
   def update
     @catalogue.update!(catalogue_params)
-    render json: { catalogue: @catalogue }, status: :ok
+    render json: @catalogue, status: :ok
   end
 
   def destroy
