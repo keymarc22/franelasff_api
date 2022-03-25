@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class StoresController < ApplicationController
+  before_action :authenticate_user!
   before_action :find_store, except: %i[index create]
 
   # GET /stores
@@ -34,7 +35,8 @@ class StoresController < ApplicationController
   private
 
   def store_params
-    params.require(:store).permit(:name, :location, :owner_id)
+    store_params = params.require(:store).permit(:name, :location)
+    @store.nil? ? store_params.merge(owner_id: Current.user.id) : store_params
   end
 
   def find_store

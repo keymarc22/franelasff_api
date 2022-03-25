@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class CataloguesController < ApplicationController
+  before_action :authenticate_user!, except: %i[show index]
   before_action :find_catalogue, except: %i[index create]
 
   # GET /catalogues
@@ -34,7 +35,8 @@ class CataloguesController < ApplicationController
   private
 
   def catalogue_params
-    params.require(:catalogue).permit(:title, :description, :owner_id)
+    catalogue_params = params.require(:catalogue).permit(:title, :description)
+    @catalogue.nil? ? catalogue_params.merge(owner_id: Current.user.id) : catalogue_params
   end
 
   def find_catalogue

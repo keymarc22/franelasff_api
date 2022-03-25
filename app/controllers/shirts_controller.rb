@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ShirtsController < ApplicationController
+  before_action :authenticate_user!
   before_action :find_shirt, except: %i[index create]
 
   # GET /shirts
@@ -34,7 +35,9 @@ class ShirtsController < ApplicationController
   private
 
   def shirt_params
-    params.require(:shirt).permit(:color, :print, :size, :quantity, :aditional_description, :store_id, :owner_id)
+    shirt_params = params.require(:shirt).permit(:color, :print, :size, :quantity, :aditional_description,
+                                                 :store_id)
+    @shirt.nil? ? shirt_params.merge(owner_id: Current.user.id) : shirt_params
   end
 
   def find_shirt

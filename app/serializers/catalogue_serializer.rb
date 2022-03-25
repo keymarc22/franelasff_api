@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CatalogueSerializer < ActiveModel::Serializer
   attributes :id, :title, :description
 

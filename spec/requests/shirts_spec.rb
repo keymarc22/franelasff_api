@@ -3,26 +3,40 @@
 require "rails_helper"
 
 RSpec.describe "Shirts", type: :request do
+  let!(:user) { create(:user) }
+  let!(:header) { { authorization: "Bearer #{user.auth_token}" } }
+
   describe "GET /shirts" do
     context "with data" do
-      let!(:shirts) { create_list(:shirt, 20) }
-      before { get shirts_path }
+      context "with user authenticated" do
+        let!(:shirts) { create_list(:shirt, 20) }
+        before { get shirts_path, headers: header }
 
-      it "should return status code 200" do
-        payload = JSON.parse(response.body)
+        it "should return status code 200" do
+          payload = JSON.parse(response.body)
 
-        expect(payload).not_to be_empty
-        expect(response).to have_http_status(200)
+          expect(payload).not_to be_empty
+          expect(response).to have_http_status(200)
+        end
+
+        it "should return shirts" do
+          payload = JSON.parse(response.body)
+          expect(payload.count).to eq(20)
+        end
       end
+      context "without authenticated user" do
+        let!(:shirts) { create_list(:shirt, 20) }
+        before { get shirts_path }
 
-      it "should return shirts" do
-        payload = JSON.parse(response.body)
-        expect(payload.count).to eq(20)
+
+        it "should return status code 401" do
+          expect(response).to have_http_status(401)
+        end
       end
     end
 
     context "without data" do
-      before { get shirts_path }
+      before { get shirts_path, headers: header }
 
       it "should return status code 200" do
         payload = JSON.parse(response.body)
@@ -40,30 +54,39 @@ RSpec.describe "Shirts", type: :request do
 
   describe "GET /shirts/{id}" do
     context "with valid id" do
-      let!(:shirt) { create(:shirt) }
-      before { get shirt_path(id: shirt.id) }
-
-      it "should return status code 200" do
-        payload = JSON.parse(response.body)
-
-        expect(payload).not_to be_empty
-        expect(response).to have_http_status(200)
+      context "with authenticated user" do
+        let!(:shirt) { create(:shirt) }
+        before { get shirt_path(id: shirt.id), headers: header }
+  
+        it "should return status code 200" do
+          payload = JSON.parse(response.body)
+  
+          expect(payload).not_to be_empty
+          expect(response).to have_http_status(200)
+        end
+  
+        it "should return shirt" do
+          payload = JSON.parse(response.body)
+          expect(payload["id"]).to eq(shirt.id)
+          expect(payload["color"]).to eq(shirt.color)
+          expect(payload["size"]).to eq(shirt.size)
+          expect(payload["print"]).to eq(shirt.print)
+          expect(payload["quantity"]).to eq(shirt.quantity)
+          expect(payload["owner"]["id"]).to eq(shirt.owner.id)
+          expect(payload["store"]["id"]).to eq(shirt.store.id)
+        end
       end
 
-      it "should return shirt" do
-        payload = JSON.parse(response.body)
-        expect(payload["id"]).to eq(shirt.id)
-        expect(payload["color"]).to eq(shirt.color)
-        expect(payload["size"]).to eq(shirt.size)
-        expect(payload["print"]).to eq(shirt.print)
-        expect(payload["quantity"]).to eq(shirt.quantity)
-        expect(payload["owner"]['id']).to eq(shirt.owner.id)
-        expect(payload["store"]['id']).to eq(shirt.store.id)
+      context "without user authenticated" do
+        let!(:shirt) { create(:shirt) }
+        before { get shirt_path(id: shirt.id) }
+
+        it { expect(response).to have_http_status(401) }
       end
     end
 
     context "with invalid id" do
-      before { get shirt_path(id: "100A") }
+      before { get shirt_path(id: "100A"), headers: header }
 
       it "should return status code 422" do
         payload = JSON.parse(response.body)
@@ -82,26 +105,35 @@ RSpec.describe "Shirts", type: :request do
 
   describe "POST /shirts" do
     context "with valid data" do
-      let!(:shirt) { attributes_for(:shirt, store_id: create(:store).id, owner_id: create(:user).id) }
-      before { post shirts_path, params: { shirt: shirt } }
+      context "with authenticated user" do
+        let!(:shirt) { attributes_for(:shirt, store_id: create(:store).id) }
+        before { post shirts_path, params: { shirt: shirt }, headers: header }
 
-      it "should return status code 201" do
-        payload = JSON.parse(response.body)
+        it "should return status code 201" do
+          payload = JSON.parse(response.body)
 
-        expect(payload).not_to be_empty
-        expect(response).to have_http_status(:created)
-        expect(response).to have_http_status(201)
+          expect(payload).not_to be_empty
+          expect(response).to have_http_status(:created)
+          expect(response).to have_http_status(201)
+        end
+
+        it "should create shirt" do
+          expect(Shirt.count).to eq(1)
+        end
       end
 
-      it "should create shirt" do
-        expect(Shirt.count).to eq(1)
+      context "without authenticated user" do
+        let!(:shirt) { attributes_for(:shirt, store_id: create(:store).id) }
+        before { post shirts_path, params: { shirt: shirt } }
+
+        it { expect(response).to have_http_status(401) }
       end
     end
 
     context "with valid data" do
       let!(:shirt) { { color: "Testing" } }
       let!(:attributes) { attributes_for(:shirt, color: "") }
-      before { post shirts_path, params: { shirt: attributes } }
+      before { post shirts_path, params: { shirt: attributes }, headers: header }
 
       it "should return status code 422" do
         payload = JSON.parse(response.body)
@@ -113,7 +145,7 @@ RSpec.describe "Shirts", type: :request do
 
       it "should return error message" do
         payload = JSON.parse(response.body)
-        msg = "La validación falló: el usuario debe existir, el almacén debe existir, el color no puede estar en blanco"
+        msg = "La validación falló: el almacén debe existir, el color no puede estar en blanco"
         expect(payload["error"]).to include(msg)
       end
     end
@@ -121,26 +153,36 @@ RSpec.describe "Shirts", type: :request do
 
   describe "PUT /shirts/{id}" do
     context "with valid data" do
-      let!(:shirt) { create(:shirt) }
-      let!(:attributes) { attributes_for(:shirt) }
-      before { put shirt_path(id: shirt.id), params: { shirt: attributes } }
+      context "with authenticated user" do
+        let!(:shirt) { create(:shirt) }
+        let!(:attributes) { attributes_for(:shirt) }
+        before { put shirt_path(id: shirt.id), params: { shirt: attributes }, headers: header }
 
-      it "should return status code 200" do
-        payload = JSON.parse(response.body)
+        it "should return status code 200" do
+          payload = JSON.parse(response.body)
 
-        expect(payload).not_to be_empty
-        expect(response).to have_http_status(200)
+          expect(payload).not_to be_empty
+          expect(response).to have_http_status(200)
+        end
+
+        it "should update shirt" do
+          expect(shirt.reload.color).to eq(attributes[:color])
+        end
       end
 
-      it "should update shirt" do
-        expect(shirt.reload.color).to eq(attributes[:color])
+      context "without authenticated user" do
+        let!(:shirt) { create(:shirt) }
+        let!(:attributes) { attributes_for(:shirt) }
+        before { put shirt_path(id: shirt.id), params: { shirt: attributes } }
+
+        it { expect(response).to have_http_status(401) }
       end
     end
 
     context "with invalid data" do
       let!(:shirt) { create(:shirt) }
       let!(:attributes) { attributes_for(:shirt, color: "") }
-      before { put shirt_path(id: shirt.id), params: { shirt: attributes } }
+      before { put shirt_path(id: shirt.id), params: { shirt: attributes }, headers: header }
 
       it "should return status code 422" do
         payload = JSON.parse(response.body)
@@ -160,23 +202,32 @@ RSpec.describe "Shirts", type: :request do
 
   describe "DELETE /shirts/{id}" do
     context "with valid id" do
-      let!(:shirt) { create(:shirt) }
-      before { delete shirt_path(id: shirt.id) }
+      context "with authenticated user" do
+        let!(:shirt) { create(:shirt) }
+        before { delete shirt_path(id: shirt.id), headers: header }
 
-      it "should return status code 200" do
-        payload = JSON.parse(response.body)
+        it "should return status code 200" do
+          payload = JSON.parse(response.body)
 
-        expect(payload).to be_empty
-        expect(response).to have_http_status(200)
+          expect(payload).to be_empty
+          expect(response).to have_http_status(200)
+        end
+
+        it "should delete shirt" do
+          expect(Shirt.count).to eq(0)
+        end
       end
 
-      it "should delete shirt" do
-        expect(Shirt.count).to eq(0)
+      context "without authenticated user" do
+        let!(:shirt) { create(:shirt) }
+        before { delete shirt_path(id: shirt.id) }
+
+        it { expect(response).to have_http_status(401) }
       end
     end
 
     context "with invalid id" do
-      before { delete shirt_path(id: "100A") }
+      before { delete shirt_path(id: "100A"), headers: header }
 
       it "should return status code 422" do
         payload = JSON.parse(response.body)

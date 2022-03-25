@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ShirtSerializer < ActiveModel::Serializer
   attributes :id, :color, :quantity, :size, :print
 

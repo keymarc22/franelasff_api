@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::API
-  # protect_from_forgery with: :null_session
-  # before_action :authenticate_user
+  include Secured
+
   rescue_from Exception do |e|
     render json: { error: e.message }, status: :internal_server_error
   end
