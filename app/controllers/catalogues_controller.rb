@@ -6,7 +6,7 @@ class CataloguesController < ApplicationController
 
   # GET /catalogues
   def index
-    @catalogues = Catalogue.all
+    @catalogues = Catalogue.includes(:shirts, :owner).all
     render json: @catalogues, status: :ok
   end
 
@@ -40,6 +40,6 @@ class CataloguesController < ApplicationController
   end
 
   def find_catalogue
-    @catalogue = Catalogue.find(params[:id])
+    @catalogue = Catalogue.includes(:shirts, :owner).find(params[:id])
   end
 end

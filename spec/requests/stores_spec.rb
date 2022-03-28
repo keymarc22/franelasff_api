@@ -10,6 +10,7 @@ RSpec.describe "Stores", type: :request do
     context "with data" do
       context "with authenticated user" do
         let!(:stores) { create_list(:store, 20) }
+        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
         before { get stores_path, headers: header }
 
         it "should return status code 200" do
@@ -34,6 +35,7 @@ RSpec.describe "Stores", type: :request do
     end
 
     context "without data" do
+      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
       before { get stores_path, headers: header }
 
       it "should return status code 200" do
@@ -54,6 +56,7 @@ RSpec.describe "Stores", type: :request do
     context "with valid id" do
       context "with authenticated user" do
         let!(:store) { create(:store) }
+        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
         before { get store_path(id: store.id), headers: header }
 
         it "should return status code 200" do
@@ -87,6 +90,7 @@ RSpec.describe "Stores", type: :request do
     end
 
     context "with invalid id" do
+      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
       before { get store_path(id: "100A"), headers: header }
 
       it "should return status code 422" do
@@ -108,6 +112,7 @@ RSpec.describe "Stores", type: :request do
     context "with valid data" do
       context "with authenticated user" do
         let!(:store) { attributes_for(:store, owner_id: create(:user).id) }
+        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
         before { post stores_path, params: { store: store }, headers: header }
 
         it "should return status code 201" do
@@ -123,7 +128,7 @@ RSpec.describe "Stores", type: :request do
         end
       end
 
-      context 'without authenticated user' do
+      context "without authenticated user" do
         let!(:store) { attributes_for(:store, owner_id: create(:user).id) }
         before { post stores_path, params: { store: store } }
 
@@ -133,6 +138,7 @@ RSpec.describe "Stores", type: :request do
 
     context "with valid data" do
       let!(:store) { { name: "Testing" } }
+      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
       before { post stores_path, params: { store: store }, headers: header }
 
       it "should return status code 422" do
@@ -155,6 +161,7 @@ RSpec.describe "Stores", type: :request do
       context "with authenticated user" do
         let!(:store) { create(:store) }
         let!(:attributes) { attributes_for(:store) }
+        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
         before { put store_path(id: store.id), params: { store: attributes }, headers: header }
 
         it "should return status code 200" do
@@ -180,6 +187,7 @@ RSpec.describe "Stores", type: :request do
 
     context "with invalid data" do
       let!(:store) { create(:store) }
+      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
       before { put store_path(id: store.id), params: { store: { name: "" } }, headers: header }
 
       it "should return status code 422" do
@@ -202,6 +210,7 @@ RSpec.describe "Stores", type: :request do
     context "with valid id" do
       context "with authenticated user" do
         let!(:store) { create(:store) }
+        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
         before { delete store_path(id: store.id), headers: header }
 
         it "should return status code 200" do
@@ -225,6 +234,7 @@ RSpec.describe "Stores", type: :request do
     end
 
     context "with invalid id" do
+      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
       before { delete store_path(id: "100A"), headers: header }
 
       it "should return status code 422" do

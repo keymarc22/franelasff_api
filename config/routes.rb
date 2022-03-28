@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   #   devise_for :users, controllers: { sessions: :sessions },
   #                      path_names: { sign_in: :login }
   # end
-
+  get "/login", to: "auth#login"
   get "/health", to: "health#health"
   resources :stores
   resources :shirts

@@ -4,6 +4,7 @@ class ApplicationController < ActionController::API
   include Secured
 
   rescue_from Exception do |e|
+    byebug
     render json: { error: e.message }, status: :internal_server_error
   end
 

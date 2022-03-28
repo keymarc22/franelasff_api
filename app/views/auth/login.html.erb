@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Franelas FF | Login</title>
+</head>
+<body>
+  <script src="https://cdn.auth0.com/js/auth0/9.5.1/auth0.min.js"></script>
+  <script>
+    window.addEventListener('load', function(){
+      let webAuth = new auth0.WebAuth({
+        domain: 'dev-s6gz9-0s.us.auth0.com',
+        clientID: '6RKeCHxt2cgVjbCDEkSZY5xZuBSi6soM',
+        responseType: 'token id_token',
+        scope: 'openid profile email',
+        redirectUri: 'https://jwt.io'
+      });
+      webAuth.authorize();
+    })
+  </script>
+</body>
+</html>

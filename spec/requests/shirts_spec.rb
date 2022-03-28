@@ -10,6 +10,7 @@ RSpec.describe "Shirts", type: :request do
     context "with data" do
       context "with user authenticated" do
         let!(:shirts) { create_list(:shirt, 20) }
+        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
         before { get shirts_path, headers: header }
 
         it "should return status code 200" do
@@ -28,7 +29,6 @@ RSpec.describe "Shirts", type: :request do
         let!(:shirts) { create_list(:shirt, 20) }
         before { get shirts_path }
 
-
         it "should return status code 401" do
           expect(response).to have_http_status(401)
         end
@@ -36,6 +36,7 @@ RSpec.describe "Shirts", type: :request do
     end
 
     context "without data" do
+      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
       before { get shirts_path, headers: header }
 
       it "should return status code 200" do
@@ -56,15 +57,16 @@ RSpec.describe "Shirts", type: :request do
     context "with valid id" do
       context "with authenticated user" do
         let!(:shirt) { create(:shirt) }
+        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
         before { get shirt_path(id: shirt.id), headers: header }
-  
+
         it "should return status code 200" do
           payload = JSON.parse(response.body)
-  
+
           expect(payload).not_to be_empty
           expect(response).to have_http_status(200)
         end
-  
+
         it "should return shirt" do
           payload = JSON.parse(response.body)
           expect(payload["id"]).to eq(shirt.id)
@@ -86,6 +88,7 @@ RSpec.describe "Shirts", type: :request do
     end
 
     context "with invalid id" do
+      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
       before { get shirt_path(id: "100A"), headers: header }
 
       it "should return status code 422" do
@@ -107,6 +110,7 @@ RSpec.describe "Shirts", type: :request do
     context "with valid data" do
       context "with authenticated user" do
         let!(:shirt) { attributes_for(:shirt, store_id: create(:store).id) }
+        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
         before { post shirts_path, params: { shirt: shirt }, headers: header }
 
         it "should return status code 201" do
@@ -133,6 +137,7 @@ RSpec.describe "Shirts", type: :request do
     context "with valid data" do
       let!(:shirt) { { color: "Testing" } }
       let!(:attributes) { attributes_for(:shirt, color: "") }
+      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
       before { post shirts_path, params: { shirt: attributes }, headers: header }
 
       it "should return status code 422" do
@@ -156,6 +161,7 @@ RSpec.describe "Shirts", type: :request do
       context "with authenticated user" do
         let!(:shirt) { create(:shirt) }
         let!(:attributes) { attributes_for(:shirt) }
+        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
         before { put shirt_path(id: shirt.id), params: { shirt: attributes }, headers: header }
 
         it "should return status code 200" do
@@ -182,6 +188,7 @@ RSpec.describe "Shirts", type: :request do
     context "with invalid data" do
       let!(:shirt) { create(:shirt) }
       let!(:attributes) { attributes_for(:shirt, color: "") }
+      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
       before { put shirt_path(id: shirt.id), params: { shirt: attributes }, headers: header }
 
       it "should return status code 422" do
@@ -204,6 +211,7 @@ RSpec.describe "Shirts", type: :request do
     context "with valid id" do
       context "with authenticated user" do
         let!(:shirt) { create(:shirt) }
+        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
         before { delete shirt_path(id: shirt.id), headers: header }
 
         it "should return status code 200" do
@@ -227,6 +235,7 @@ RSpec.describe "Shirts", type: :request do
     end
 
     context "with invalid id" do
+      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
       before { delete shirt_path(id: "100A"), headers: header }
 
       it "should return status code 422" do

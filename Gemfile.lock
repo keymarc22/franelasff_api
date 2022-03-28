@@ -112,6 +112,7 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       terminal-table (>= 1.5.1)
     jsonapi-renderer (0.2.2)
+    jwt (2.1.0)
     listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -241,6 +242,7 @@ DEPENDENCIES
   factory_bot_rails
   faker!
   i18n-tasks
+  jwt (~> 2.1.0)
   listen (~> 3.3)
   pg (~> 1.1)
   puma (~> 5.0)

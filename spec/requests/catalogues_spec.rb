@@ -118,7 +118,8 @@ RSpec.describe "Catalogues", type: :request do
   describe "POST /catalogues" do
     context "with valid data" do
       context "with user authenticated" do
-        let!(:catalogue) { attributes_for(:catalogue, store_id: create(:store).id, owner_id: create(:user).id) }
+        let!(:catalogue) { attributes_for(:catalogue, store_id: create(:store).id) }
+        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
         before { post catalogues_path, params: { catalogue: catalogue }, headers: header }
 
         it "should return status code 201" do
@@ -135,7 +136,7 @@ RSpec.describe "Catalogues", type: :request do
       end
 
       context "without user authenticated" do
-        let!(:catalogue) { attributes_for(:catalogue, store_id: create(:store).id, owner_id: create(:user).id) }
+        let!(:catalogue) { attributes_for(:catalogue, store_id: create(:store).id) }
         before { post catalogues_path, params: { catalogue: catalogue } }
 
         it "should return status code 401" do
@@ -152,6 +153,7 @@ RSpec.describe "Catalogues", type: :request do
     context "with valid data" do
       let!(:catalogue) { { color: "Testing" } }
       let!(:attributes) { attributes_for(:catalogue, title: "") }
+      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
       before { post catalogues_path, params: { catalogue: attributes }, headers: header }
 
       it "should return status code 422" do
@@ -175,21 +177,22 @@ RSpec.describe "Catalogues", type: :request do
       context "with user authenticated" do
         let!(:catalogue) { create(:catalogue) }
         let!(:attributes) { attributes_for(:catalogue) }
+        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
         before { put catalogue_path(id: catalogue.id), params: { catalogue: attributes }, headers: header }
-  
+
         it "should return status code 200" do
           payload = JSON.parse(response.body)
-  
+
           expect(payload).not_to be_empty
           expect(response).to have_http_status(200)
         end
-  
+
         it "should update catalogue" do
           expect(catalogue.reload.title).to eq(attributes[:title])
         end
       end
 
-      context 'without user authenticated' do
+      context "without user authenticated" do
         let!(:catalogue) { create(:catalogue) }
         let!(:attributes) { attributes_for(:catalogue) }
         before { put catalogue_path(id: catalogue.id), params: { catalogue: attributes } }
@@ -208,6 +211,7 @@ RSpec.describe "Catalogues", type: :request do
     context "with invalid data" do
       let!(:catalogue) { create(:catalogue) }
       let!(:attributes) { attributes_for(:catalogue, title: "") }
+      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
       before { put catalogue_path(id: catalogue.id), params: { catalogue: attributes }, headers: header }
 
       it "should return status code 422" do
@@ -230,6 +234,7 @@ RSpec.describe "Catalogues", type: :request do
     context "with valid id" do
       context "with user authenticated" do
         let!(:catalogue) { create(:catalogue) }
+        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
         before { delete catalogue_path(id: catalogue.id), headers: header }
 
         it "should return status code 200" do
@@ -259,6 +264,7 @@ RSpec.describe "Catalogues", type: :request do
     end
 
     context "with invalid id" do
+      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
       before { delete catalogue_path(id: "100A"), headers: header }
 
       it "should return status code 422" do

@@ -29,7 +29,6 @@ module FranelasffReact
     config.i18n.available_locales = %i[en es]
     config.time_zone = "Caracas"
     config.active_record.default_timezone = :caracas
-
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
@@ -42,5 +41,6 @@ module FranelasffReact
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+    config.eager_load_paths << Rails.root.join("app/lib")
   end
 end

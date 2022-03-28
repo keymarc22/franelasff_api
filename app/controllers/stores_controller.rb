@@ -6,7 +6,7 @@ class StoresController < ApplicationController
 
   # GET /stores
   def index
-    @stores = Store.all
+    @stores = Store.includes(:shirts, :owner).all
     render json: @stores, status: :ok
   end
 
@@ -40,6 +40,6 @@ class StoresController < ApplicationController
   end
 
   def find_store
-    @store = Store.find(params[:id])
+    @store = Store.includes(:shirts, :owner).find(params[:id])
   end
 end
