@@ -19,11 +19,11 @@ class JsonWebToken
                # El objetivo es permitirle a otras partes verificar firmas generadas por tu aplicacion.
                algorithm: "RS256",
                # Quien emite este token. Usa tu dominio de Auth0
-               iss: "https://dev-s6gz9-0s.us.auth0.com/",
+               iss: Rails.application.credentials.auth_domain,
                # Verificar que el token fue emitido por lo que pusimos en "iss"
                verify_iss: true,
                # Para quien fue emitido este token. Aqui debes colocar tu Client ID de Auth0
-               aud: "6RKeCHxt2cgVjbCDEkSZY5xZuBSi6soM",
+               aud: Rails.application.credentials.auth_client_id,
                # Verificar que el token fue emitido para lo que pusimos en "aud"
                verify_aud: true) do |header|
       # Dentro de este bloque se especifica como obtener la llave publica para verificar la firma
@@ -34,7 +34,7 @@ class JsonWebToken
 
   def self.jwks_hash
     # Obtenemos la llave publica del dominio de Auth0
-    jwks_raw = Net::HTTP.get URI("https://dev-s6gz9-0s.us.auth0.com/.well-known/jwks.json")
+    jwks_raw = Net::HTTP.get URI(Rails.application.credentials.auth_public_key)
     # Decodificamos la llave publica y la retornamos
     jwks_keys = Array(JSON.parse(jwks_raw)["keys"])
     jwks_keys
