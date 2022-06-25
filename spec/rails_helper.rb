@@ -6,7 +6,7 @@ ENV["RAILS_ENV"] ||= "test"
 require File.expand_path("../config/environment", __dir__)
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
-require 'json_web_token'
+require "json_web_token"
 require "rspec/rails"
 require "support/factory_bot"
 require "support/database_cleaner"

@@ -11,6 +11,6 @@ class Shirt < ApplicationRecord
   after_create :set_code
 
   def set_code
-    update(code: "#{store_id}#{id}")
+    update(code: "0#{store_id}#{id}")
   end
 end

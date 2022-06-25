@@ -2,16 +2,27 @@
 
 require "rails_helper"
 
-RSpec.describe "Stores", type: :request do
+RSpec.describe "Shirts", type: :request do
   let!(:user) { create(:user) }
-  let!(:header) { { authorization: "Bearer #{user.auth_token}" } }
+  let(:headers) do
+    {
+      uid: response.headers["uid"],
+      client: response.headers["client"],
+      "access-token": response.headers["access-token"]
+    }
+  end
 
-  describe "GET /stores" do
+  before do
+    post new_user_session_path, params: { email: user.email, password: user.password }, as: :json
+    headers
+  end
+
+  describe "GET /shirts" do
     context "with data" do
-      context "with authenticated user" do
-        let!(:stores) { create_list(:store, 20) }
-        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
-        before { get stores_path, headers: header }
+      let!(:shirts) { create_list(:shirt, 20) }
+
+      context "with user authenticated" do
+        before { get api_v1_shirts_path, headers: headers }
 
         it "should return status code 200" do
           payload = JSON.parse(response.body)
@@ -20,23 +31,23 @@ RSpec.describe "Stores", type: :request do
           expect(response).to have_http_status(200)
         end
 
-        it "should return stores" do
+        it "should return shirts" do
           payload = JSON.parse(response.body)
           expect(payload.count).to eq(20)
         end
       end
 
       context "without authenticated user" do
-        let!(:stores) { create_list(:store, 20) }
-        before { get stores_path }
+        before { get api_v1_shirts_path }
 
-        it { expect(response).to have_http_status(401) }
+        it "should return status code 401" do
+          expect(response).to have_http_status(401)
+        end
       end
     end
 
     context "without data" do
-      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
-      before { get stores_path, headers: header }
+      before { get api_v1_shirts_path, headers: headers }
 
       it "should return status code 200" do
         payload = JSON.parse(response.body)
@@ -45,19 +56,19 @@ RSpec.describe "Stores", type: :request do
         expect(response).to have_http_status(200)
       end
 
-      it "should return stores empty" do
+      it "should return shirts empty" do
         payload = JSON.parse(response.body)
         expect(payload.count).to eq(0)
       end
     end
   end
 
-  describe "GET /stores/{id}" do
+  describe "GET /shirts/{id}" do
     context "with valid id" do
+      let!(:shirt) { create(:shirt) }
+
       context "with authenticated user" do
-        let!(:store) { create(:store) }
-        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
-        before { get store_path(id: store.id), headers: header }
+        before { get api_v1_shirt_path(id: shirt.id), headers: headers }
 
         it "should return status code 200" do
           payload = JSON.parse(response.body)
@@ -66,32 +77,27 @@ RSpec.describe "Stores", type: :request do
           expect(response).to have_http_status(200)
         end
 
-        it "should return store" do
+        it "should return shirt" do
           payload = JSON.parse(response.body)
-          expect(payload["id"]).to eq(store.id)
-        end
-
-        it "should return information" do
-          payload = JSON.parse(response.body)
-
-          expect(payload["id"]).to eq(store.id)
-          expect(payload["name"]).to eq(store.name)
-          expect(payload["location"]).to eq(store.location)
-          expect(payload["shirts"]).to eq(store.shirts)
+          expect(payload["id"]).to eq(shirt.id)
+          expect(payload["color"]).to eq(shirt.color)
+          expect(payload["size"]).to eq(shirt.size)
+          expect(payload["print"]).to eq(shirt.print)
+          expect(payload["quantity"]).to eq(shirt.quantity)
+          expect(payload["owner"]["id"]).to eq(shirt.owner.id)
+          expect(payload["store"]["id"]).to eq(shirt.store.id)
         end
       end
 
-      context "without authenticated user" do
-        let!(:store) { create(:store) }
-        before { get store_path(id: store.id) }
+      context "without user authenticated" do
+        before { get api_v1_shirt_path(id: shirt.id) }
 
         it { expect(response).to have_http_status(401) }
       end
     end
 
     context "with invalid id" do
-      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
-      before { get store_path(id: "100A"), headers: header }
+      before { get api_v1_shirt_path(id: "100A"), headers: headers }
 
       it "should return status code 422" do
         payload = JSON.parse(response.body)
@@ -103,17 +109,17 @@ RSpec.describe "Stores", type: :request do
 
       it "should return error message" do
         payload = JSON.parse(response.body)
-        expect(payload["error"]).to eq("Couldn't find Store with 'id'=100A")
+        expect(payload["error"]).to eq("Couldn't find Shirt with 'id'=100A")
       end
     end
   end
 
-  describe "POST /stores" do
+  describe "POST /shirts" do
     context "with valid data" do
       context "with authenticated user" do
-        let!(:store) { attributes_for(:store, owner_id: create(:user).id) }
-        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
-        before { post stores_path, params: { store: store }, headers: header }
+        let!(:shirt) { attributes_for(:shirt, store_id: create(:store).id) }
+
+        before { post api_v1_shirts_path, params: { shirt: shirt }, headers: headers }
 
         it "should return status code 201" do
           payload = JSON.parse(response.body)
@@ -123,23 +129,23 @@ RSpec.describe "Stores", type: :request do
           expect(response).to have_http_status(201)
         end
 
-        it "should create store" do
-          expect(Store.count).to eq(1)
+        it "should create shirt" do
+          expect(Shirt.count).to eq(1)
         end
       end
 
       context "without authenticated user" do
-        let!(:store) { attributes_for(:store, owner_id: create(:user).id) }
-        before { post stores_path, params: { store: store } }
+        let!(:shirt) { attributes_for(:shirt, store_id: create(:store).id) }
+        before { post api_v1_shirts_path, params: { shirt: shirt } }
 
         it { expect(response).to have_http_status(401) }
       end
     end
 
     context "with valid data" do
-      let!(:store) { { name: "Testing" } }
-      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
-      before { post stores_path, params: { store: store }, headers: header }
+      let!(:shirt) { { color: "Testing" } }
+      let!(:attributes) { attributes_for(:shirt, color: "") }
+      before { post api_v1_shirts_path, params: { shirt: attributes }, headers: headers }
 
       it "should return status code 422" do
         payload = JSON.parse(response.body)
@@ -151,18 +157,19 @@ RSpec.describe "Stores", type: :request do
 
       it "should return error message" do
         payload = JSON.parse(response.body)
-        expect(payload["error"]).to include("la ubicación no puede estar en blanco")
+        msg = "La validación falló: el almacén debe existir, el color no puede estar en blanco"
+        expect(payload["error"]).to include(msg)
       end
     end
   end
 
-  describe "PUT /stores/{id}" do
+  describe "PUT /shirts/{id}" do
     context "with valid data" do
       context "with authenticated user" do
-        let!(:store) { create(:store) }
-        let!(:attributes) { attributes_for(:store) }
-        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
-        before { put store_path(id: store.id), params: { store: attributes }, headers: header }
+        let!(:shirt) { create(:shirt) }
+        let!(:attributes) { attributes_for(:shirt) }
+
+        before { put api_v1_shirt_path(id: shirt.id), params: { shirt: attributes }, headers: headers }
 
         it "should return status code 200" do
           payload = JSON.parse(response.body)
@@ -171,24 +178,24 @@ RSpec.describe "Stores", type: :request do
           expect(response).to have_http_status(200)
         end
 
-        it "should update store" do
-          expect(store.reload.location).to eq(attributes[:location])
+        it "should update shirt" do
+          expect(shirt.reload.color).to eq(attributes[:color])
         end
       end
 
       context "without authenticated user" do
-        let!(:store) { create(:store) }
-        let!(:attributes) { attributes_for(:store) }
-        before { put store_path(id: store.id), params: { store: attributes } }
+        let!(:shirt) { create(:shirt) }
+        let!(:attributes) { attributes_for(:shirt) }
+        before { put api_v1_shirt_path(id: shirt.id), params: { shirt: attributes } }
 
         it { expect(response).to have_http_status(401) }
       end
     end
 
     context "with invalid data" do
-      let!(:store) { create(:store) }
-      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
-      before { put store_path(id: store.id), params: { store: { name: "" } }, headers: header }
+      let!(:shirt) { create(:shirt) }
+      let!(:attributes) { attributes_for(:shirt, color: "") }
+      before { put api_v1_shirt_path(id: shirt.id), params: { shirt: attributes }, headers: headers }
 
       it "should return status code 422" do
         payload = JSON.parse(response.body)
@@ -201,17 +208,17 @@ RSpec.describe "Stores", type: :request do
       it "should return error message" do
         payload = JSON.parse(response.body)
 
-        expect(payload["error"]).to eq("La validación falló: el nombre no puede estar en blanco")
+        expect(payload["error"]).to eq("La validación falló: el color no puede estar en blanco")
       end
     end
   end
 
-  describe "DELETE /stores/{id}" do
+  describe "DELETE /shirts/{id}" do
     context "with valid id" do
       context "with authenticated user" do
-        let!(:store) { create(:store) }
-        before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
-        before { delete store_path(id: store.id), headers: header }
+        let!(:shirt) { create(:shirt) }
+
+        before { delete api_v1_shirt_path(id: shirt.id), headers: headers }
 
         it "should return status code 200" do
           payload = JSON.parse(response.body)
@@ -220,22 +227,21 @@ RSpec.describe "Stores", type: :request do
           expect(response).to have_http_status(200)
         end
 
-        it "should delete store" do
-          expect(Store.count).to eq(0)
+        it "should delete shirt" do
+          expect(Shirt.count).to eq(0)
         end
       end
 
       context "without authenticated user" do
-        let!(:store) { create(:store) }
-        before { delete store_path(id: store.id) }
+        let!(:shirt) { create(:shirt) }
+        before { delete api_v1_shirt_path(id: shirt.id) }
 
         it { expect(response).to have_http_status(401) }
       end
     end
 
     context "with invalid id" do
-      before { allow(JsonWebToken).to receive(:verify).and_return([{email: user.email}]) }
-      before { delete store_path(id: "100A"), headers: header }
+      before { delete api_v1_shirt_path(id: "100A"), headers: headers }
 
       it "should return status code 422" do
         payload = JSON.parse(response.body)
@@ -247,7 +253,7 @@ RSpec.describe "Stores", type: :request do
 
       it "should return error message" do
         payload = JSON.parse(response.body)
-        expect(payload["error"]).to eq("Couldn't find Store with 'id'=100A")
+        expect(payload["error"]).to eq("Couldn't find Shirt with 'id'=100A")
       end
     end
   end

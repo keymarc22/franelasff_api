@@ -5,6 +5,7 @@ require "rails_helper"
 RSpec.describe Store, type: :model do
   describe "validate relations" do
     it { is_expected.to have_many(:shirts) }
+    it { is_expected.to belong_to(:owner).class_name("User") }
   end
 
   describe "validations" do

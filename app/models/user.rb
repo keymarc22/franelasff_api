@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  extend Devise::Models
+
   has_many :catalogues, dependent: :destroy, as: :owner
   has_many :shirts, dependent: :destroy, as: :owner
   has_many :stores, dependent: :destroy, as: :owner
 
-  after_initialize :generate_auth_token
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
+  include DeviseTokenAuth::Concerns::User
 
-  def generate_auth_token
-    # User.new
-    self.auth_token = TokenGenerationService.generate if auth_token.blank?
-  end
+  validates :name, :lastname, :country, :email, presence: true
+  validates :email, uniqueness: { case_sensitive: false }
 end

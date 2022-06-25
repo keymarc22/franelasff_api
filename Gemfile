@@ -50,5 +50,9 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "active_model_serializers", "~> 0.10.8"
-gem "jwt", "~> 2.1.0"
 gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
+# Use json Web Token (JWT) for token based authentication
+# gem "jwt", "~> 2.1.0"
+gem "devise_token_auth"
+# Use acteModel has_secure_password
+# gem "bcrypt"

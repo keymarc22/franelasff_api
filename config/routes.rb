@@ -1,13 +1,22 @@
 # frozen_string_literal: true
 
+require "devise_token_auth"
+
 Rails.application.routes.draw do
-  # scope :api, defaults: { format: :json } do
-  #   devise_for :users, controllers: { sessions: :sessions },
-  #                      path_names: { sign_in: :login }
-  # end
-  get "/login", to: "auth#login"
+  mount_devise_token_auth_for "User", at: "auth"
+
+  # root to: "home#index"
   get "/health", to: "health#health"
-  resources :stores
-  resources :shirts
-  resources :catalogues
+
+  namespace :api do
+    namespace :v1 do
+      resources :stores
+      resources :shirts
+      resources :catalogues
+    end
+
+    scope :v1 do
+      mount_devise_token_auth_for "User", at: "auth"
+    end
+  end
 end
