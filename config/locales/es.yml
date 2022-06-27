@@ -18,6 +18,12 @@ es:
         location: la ubicación
         name: el nombre
         owner: el usuario
+      user:
+        name: el nombre
+        lastname: el apellido
+        country: el país
+        phone_number: el teléfono
+        email: el correo
     errors:
       message:
         record_invalid: Información inválida

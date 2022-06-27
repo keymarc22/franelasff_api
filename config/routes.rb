@@ -5,7 +5,7 @@ require "devise_token_auth"
 Rails.application.routes.draw do
   mount_devise_token_auth_for "User", at: "auth"
 
-  # root to: "home#index"
+  root to: "home#index"
   get "/health", to: "health#health"
 
   namespace :api do
@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       resources :stores
       resources :shirts
       resources :catalogues
+      resources :users
     end
 
     scope :v1 do

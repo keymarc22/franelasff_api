@@ -142,7 +142,7 @@ RSpec.describe "Shirts", type: :request do
       end
     end
 
-    context "with valid data" do
+    context "with invalid data" do
       let!(:shirt) { { color: "Testing" } }
       let!(:attributes) { attributes_for(:shirt, color: "") }
       before { post api_v1_shirts_path, params: { shirt: attributes }, headers: headers }
