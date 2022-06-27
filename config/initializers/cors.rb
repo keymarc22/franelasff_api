@@ -7,13 +7,27 @@
 
 # Read more: https://github.com/cyu/rack-cors
 
+to_regexp = ->(string) { Regexp.new(string) }
+hosts = [
+  *ENV.fetch('ALLOWED_ORIGINS').split(','),
+  *ENV.fetch('ALLOWED_ORIGIN_REGEXPS').split(';').map(&to_regexp)
+]
+
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins "*"
+    origins(*hosts)
 
     resource "*",
              headers: :any,
              expose: %w[access-token expiry token-type uid client],
              methods: %i[get post options delete put patch]
+  end
+
+  allow do
+    origins "*"
+
+    resource :catalogue,
+              headers: :any,
+              methods: :get,
   end
 end

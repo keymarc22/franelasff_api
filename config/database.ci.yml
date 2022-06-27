@@ -1,0 +1,8 @@
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: franelassff_test
+  host: localhost
+  pool: 5
+  username: postgres
+  password: postgres
