@@ -23,7 +23,15 @@ default: &default
 
 development:
   <<: *default
-  database: franelasff_react_development
+  database: franelassff_api_development
+
+test:
+  <<: *default
+  database: franelassff_test
+
+production:
+  <<: *default
+  database: franelassff_production
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
