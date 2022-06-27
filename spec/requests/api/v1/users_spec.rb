@@ -118,7 +118,6 @@ RSpec.describe "Users", type: :request do
       let!(:new_user) { attributes_for(:user) }
 
       context "with authenticated user" do
-
         before { post api_v1_users_path, params: { user: new_user }, headers: headers }
 
         it "should return status code 201" do

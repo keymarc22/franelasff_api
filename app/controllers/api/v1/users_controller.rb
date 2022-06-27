@@ -9,7 +9,7 @@ module Api
       # GET /users
       def index
         @users = User.without_current(current_user.id)
-        render json: @users.map(), status: :ok
+        render json: @users.map, status: :ok
       end
 
       # POST /users
@@ -26,7 +26,7 @@ module Api
       private
 
       def user_params
-        user_params = params.require(:user).permit(:name, :lastname, :country, :phone_number, :email, :password)
+        params.require(:user).permit(:name, :lastname, :country, :phone_number, :email, :password)
       end
 
       def find_user

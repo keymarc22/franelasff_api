@@ -12,7 +12,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  scope :without_current, -> (id) { where.not(id: id) }
+  scope :without_current, ->(id) { where.not(id: id) }
   include DeviseTokenAuth::Concerns::User
 
   validates :name, :lastname, :country, :email, presence: true
