@@ -1,24 +1,18 @@
-# README
+# Hi there!
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is my first API made it with Ruby on Rails 6.1.5, it is about a Shirt Company called FranelasFF placed in Venezuela.
+It's made it to work with a React Frontend
 
-Things you may want to cover:
+## Some technologies
+- Devise auth Token
+- Rack cors
+- Active Model Serializer
 
-* Ruby version
+## Testing using
+- Database cleaner
+- Factory bot
+- Faker
+- Rspec
+- Shoulda Matchers
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Work in process :octocat:
