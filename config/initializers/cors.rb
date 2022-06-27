@@ -9,8 +9,8 @@
 
 to_regexp = ->(string) { Regexp.new(string) }
 hosts = [
-  *ENV.fetch('ALLOWED_ORIGINS').split(','),
-  *ENV.fetch('ALLOWED_ORIGIN_REGEXPS').split(';').map(&to_regexp)
+  *ENV.fetch("ALLOWED_ORIGINS").split(","),
+  *ENV.fetch("ALLOWED_ORIGIN_REGEXPS").split(";").map(&to_regexp)
 ]
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
@@ -24,10 +24,10 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
   end
 
   allow do
-    origins "*"
+    origins("*")
 
-    resource :catalogue,
-              headers: :any,
-              methods: :get,
+    resource :catalogues,
+             headers: :any,
+             methods: :get
   end
 end
