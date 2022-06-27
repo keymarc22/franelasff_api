@@ -3,22 +3,28 @@ en:
   activerecord:
     attributes:
       catalogue:
-        description: la descripción
-        owner: el usuario
-        shirts: las camisas
-        title: el título
+        description: Description
+        owner: user
+        shirts: shirts
+        title: title
       shirt:
-        color: el color
-        owner: el usuario
-        print: el estampado
-        quantity: la cantidad
-        size: la talla
-        store: el almacén
+        color: color
+        owner: user
+        print: print
+        quantity: quantity
+        size: size
+        store: store
       store:
-        location: la ubicación
-        name: el nombre
-        owner: el usuario
+        location: location
+        name: name
+        owner: user
+      user:
+        country: country
+        email: email
+        lastname: lastname
+        name: name
+        phone_number: phonenumber
     errors:
       message:
-        record_invalid: Información inválida
+        record_invalid: Invalid information
   hello: Hello world

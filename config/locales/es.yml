@@ -19,12 +19,12 @@ es:
         name: el nombre
         owner: el usuario
       user:
-        name: el nombre
-        lastname: el apellido
         country: el país
-        phone_number: el teléfono
         email: el correo
+        lastname: el apellido
+        name: el nombre
+        phone_number: el teléfono
     errors:
       message:
         record_invalid: Información inválida
-  hello: Hola Mundo
+  hello: Hola mundo

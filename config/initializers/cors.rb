@@ -7,15 +7,9 @@
 
 # Read more: https://github.com/cyu/rack-cors
 
-to_regexp = ->(string) { Regexp.new(string) }
-hosts = [
-  *ENV.fetch("ALLOWED_ORIGINS").split(","),
-  *ENV.fetch("ALLOWED_ORIGIN_REGEXPS").split(";").map(&to_regexp)
-]
-
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins(*hosts)
+    origins "http://localhost:3000/, https://franelasff.herokuapp.com/"
 
     resource "*",
              headers: :any,

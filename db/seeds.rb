@@ -10,18 +10,20 @@ user = User.create!(
   name: 'Admin',
   lastname: 'account',
   country: 'VE',
-  email: ENV['ADMIN_USER'],
-  password: ENV['ADMIN_PASSWORD'],
-  password_confirmation: ENV['ADMIN_PASSWORD']
+  email: 'admin@gmail.com',
+  password: "123456789",
+  password_confirmation: "123456789"
 )
 
-puts (user.nil? ? user.erros : 'Admin user created')
+puts (user.nil? ? user.errors : 'Admin user created')
 
 store = Store.create(
   name: 'Mercado',
   location: 'San Martin',
   owner: user
 )
+
+puts (store.nil? ? store.errors : 'Store created')
 
 shirts = [
   {

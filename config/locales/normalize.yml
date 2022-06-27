@@ -18,6 +18,12 @@ normalize:
         location: la ubicación
         name: el nombre
         owner: el usuario
+      user:
+        country: el país
+        email: el correo
+        lastname: el apellido
+        name: el nombre
+        phone_number: el teléfono
     errors:
       message:
         record_invalid: Información inválida
